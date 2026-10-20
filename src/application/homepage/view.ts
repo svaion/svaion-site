@@ -29,7 +29,6 @@ export interface HomepageView extends SiteChromeView {
     readonly email: EmailLink;
     readonly heading: string;
     readonly primaryCta: Link;
-    readonly secondaryCta: Link;
   };
   readonly audience: {
     readonly heading: string;
@@ -71,7 +70,6 @@ export interface HomepageView extends SiteChromeView {
   };
   readonly closing: {
     readonly heading: string;
-    readonly cta: Link;
   };
 }
 

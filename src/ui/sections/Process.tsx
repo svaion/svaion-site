@@ -9,8 +9,10 @@ export function Process({ view }: { view: HomepageView["process"] }) {
         <ol className="steps" data-stagger role="list">
           {view.stages.map((stage) => (
             <li className="step" key={stage.name}>
-              <h3>{stage.name}</h3>
-              <p>{stage.description}</p>
+              <div className="step-card">
+                <h3>{stage.name}</h3>
+                <p>{stage.description}</p>
+              </div>
             </li>
           ))}
         </ol>

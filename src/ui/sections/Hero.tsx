@@ -8,7 +8,7 @@ export function Hero({ view }: { view: HomepageView["hero"] }) {
   const track = [...view.kicker, view.kicker[0]];
   return (
     <section className="hero" id="top" aria-labelledby="hero-title">
-      <div className="hero-card on-dark" data-theme="dark">
+      <div className="hero-card on-dark" data-theme="dark" data-nav-dark>
         <div className="hero-in">
           <div className="hero-copy">
             <p className="kicker">

@@ -12,9 +12,20 @@ function subscribeToScroll(onChange: () => void) {
 const isScrolled = () => window.scrollY > 24;
 const notScrolled = () => false;
 
+/** True while a Midnight block (marked data-nav-dark) sits under the middle of the nav bar. */
+function isOverDark() {
+  const line = 32;
+  return Array.from(document.querySelectorAll("[data-nav-dark]")).some((block) => {
+    const { top, bottom } = block.getBoundingClientRect();
+    return top <= line && bottom >= line;
+  });
+}
+const notOverDark = () => false;
+
 export function Nav({ view }: { view: NavView }) {
   const nav = useRef<HTMLElement>(null);
   const scrolled = useSyncExternalStore(subscribeToScroll, isScrolled, notScrolled);
+  const overDark = useSyncExternalStore(subscribeToScroll, isOverDark, notOverDark);
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPaddingTop, setMenuPaddingTop] = useState<number>();
 
@@ -47,10 +58,12 @@ export function Nav({ view }: { view: NavView }) {
   }, []);
 
   const navClass = ["nav", scrolled && "scrolled", menuOpen && "menu-open"].filter(Boolean).join(" ");
+  // Once it floats, the pill takes the light theme over light sections and stays dark over Midnight.
+  const light = scrolled && !overDark && !menuOpen;
 
   return (
     <>
-      <header ref={nav} className={navClass} id="nav" data-theme="dark">
+      <header ref={nav} className={navClass} id="nav" data-theme={light ? undefined : "dark"}>
         <div className="nav-in">
           <a className="brand" href={view.homeHref} aria-label={view.homeLabel}>
             <Wordmark className="wordmark sv-reveal sv-run" aria-hidden="true" focusable="false" />
