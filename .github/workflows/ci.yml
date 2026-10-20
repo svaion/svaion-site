@@ -1,5 +1,6 @@
 # Every pull request and every push to main: the checks a change must pass before it can merge.
-# The job names are the required status checks on main; rename them there too.
+# The site and docker job names are the required status checks on main; rename them there too.
+# On main, a third job then publishes the Docker image that AWS Lightsail runs.
 name: CI
 
 on:
@@ -59,3 +60,29 @@ jobs:
           curl -fsSI http://127.0.0.1:8080/ | grep -qi '^content-security-policy:'
       - if: failure()
         run: docker logs site
+
+  # After both checks pass on main: publish the image Lightsail runs (README, "AWS Lightsail").
+  publish:
+    name: Publish image
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [site, docker]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE: ghcr.io/${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v5
+      - run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+      - name: Build and push latest and this commit's tag
+        run: |
+          tag="sha-${GITHUB_SHA::7}"
+          docker build --target serve \
+            --label org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }} \
+            --label org.opencontainers.image.revision=$GITHUB_SHA \
+            -t "$IMAGE:latest" -t "$IMAGE:$tag" .
+          docker push "$IMAGE:$tag"
+          docker push "$IMAGE:latest"
+          echo "Published $IMAGE:$tag (also :latest)" >> "$GITHUB_STEP_SUMMARY"
