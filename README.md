@@ -14,6 +14,22 @@ npm run parity     # with preview running: diff the homepage against reference/ 
 npm run check:csp  # with preview running: load every page in Chromium; fails on a CSP violation or broken behaviour
 ```
 
+## Docker
+
+The same site in a container, with nothing to install but Docker:
+
+```bash
+docker compose up --build -d     # build, test, and serve on http://localhost:8080
+docker compose down              # stop it
+docker build --target export --output type=local,dest=out .   # only the static files, built in the container
+```
+
+- The image pins Node.js 26.8.1 and runs `npm test` before `npm run build`, so a broken domain rule fails the image instead of shipping.
+- nginx serves the files with the same headers, redirects, and 404s as Cloudflare Pages. `tools/docker/nginx-locations.mjs` turns `out/_headers` into nginx config, so headers are still defined once, in `tools/headers/write-headers.mjs`.
+- To check a running container: `node tools/headers/check-csp.mjs http://127.0.0.1:8080`.
+- The container runs as a non-root user with a read-only filesystem, bound to this machine only.
+- On a server, put TLS in front (Cloudflare or a reverse proxy). Rebuild monthly with `docker compose build --pull` to pick up nginx and Alpine security fixes.
+
 ## Pages
 
 - `/`: the homepage
@@ -42,7 +58,8 @@ src/
 reference/homepage-v10.html  the approved homepage design; the build must match it
 GLOSSARY-MAP.md              the ubiquitous language, one glossary per context
 docs/adr/                    why it is built this way
-tools/                       parity, security headers, and the preview server
+tools/                       parity, security headers, the preview server, and nginx config for Docker
+Dockerfile, compose.yaml     the container build (see Docker)
 ```
 
 Dependencies point one way: `app → ui → application → contexts`. ESLint rejects imports that go backward (`npm run lint`).
@@ -68,7 +85,7 @@ On Cloudflare Pages, use:
 - output directory `out`;
 - Node.js 20.9 or later.
 
-Netlify works the same way.
+Netlify works the same way. To build without Node.js installed, use the Docker export command above and upload `out/`. To host it yourself, run the container (see Docker).
 
 The four mailboxes (hello@, sales@, support@, privacy@) must exist, because every call to action is an email.
 
