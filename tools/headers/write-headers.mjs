@@ -50,6 +50,9 @@ const rules = [
   }],
   // File names under /_next/static carry a content hash, so a new build never reuses one.
   ['/_next/static/*', { 'Cache-Control': 'public, max-age=31536000, immutable' }],
+  // Brand files other places link to by fixed URL (the email signature's logo): the name never
+  // changes, so cache for a day rather than forever, and a replaced file reaches inboxes by tomorrow.
+  ['/brand/*', { 'Cache-Control': 'public, max-age=86400' }],
 ];
 
 const fail = (message) => {
@@ -96,12 +99,18 @@ for (const page of pages) {
 if (rules.length > MAX_RULES) fail(`${rules.length} rules; Cloudflare Pages allows ${MAX_RULES}`);
 const seen = new Map();
 const lines = ['# Written by tools/headers/write-headers.mjs after every build; edit that script, not this file.'];
+// Two rules can match one request when either path is a prefix of the other; /* matches every request.
+const overlap = (a, b) => {
+  const [x, y] = [a, b].map((path) => path.replace(/\*$/, ''));
+  return x.startsWith(y) || y.startsWith(x);
+};
 for (const [path, headers] of rules) {
   lines.push(path);
   for (const [header, value] of Object.entries(headers)) {
-    // Every request matches /*, and Cloudflare joins a header set by two matching rules with a comma.
-    if (seen.has(header)) fail(`${header} is set by both ${seen.get(header)} and ${path}; matching rules would join them`);
-    seen.set(header, path);
+    // Cloudflare joins a header set by two rules that match the same request with a comma.
+    const clash = (seen.get(header) || []).find((other) => overlap(other, path));
+    if (clash) fail(`${header} is set by both ${clash} and ${path}; matching rules would join them`);
+    seen.set(header, [...(seen.get(header) || []), path]);
     const line = `  ${header}: ${value}`;
     if (line.length > MAX_LINE) fail(`${path} ${header} is ${line.length} characters; Cloudflare Pages allows ${MAX_LINE} per line`);
     lines.push(line);

@@ -44,6 +44,7 @@ docker build --target export --output type=local,dest=out .   # only the static 
 - `/privacy/`: the privacy notice
 - `404.html`: served for any unknown address
 - `robots.txt`, `sitemap.xml`, and the link-preview image at `/opengraph-image/share.png`
+- `/brand/svaion-ai-88.png`: the logo in the team's email signature, which loads it from this exact URL. Don't rename or move it; to change the logo, replace the file. It comes from `brand/stationery/email-signature/` in the brand kit.
 
 ## Where things live
 
