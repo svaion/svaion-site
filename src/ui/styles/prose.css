@@ -1,0 +1,76 @@
+/* Long-form pages (the privacy notice): a compact Midnight head card under the transparent nav, then a light
+   reading column of about 68 characters with a contents list beside it on wide screens. Tokens from globals.css. */
+
+/* Head: the hero card's inset and radius, not full height, no wave */
+.doc-head { padding: 0 max(var(--inset), env(safe-area-inset-left, 0px)) var(--inset); }
+.doc-head-card { border-radius: var(--r-hero); background: var(--midnight); color: var(--text); }
+.doc-head-in { max-width: 1240px; margin-inline: auto; padding: calc(var(--nav-h) + clamp(40px, 7vw, 88px)) var(--gutter) clamp(40px, 6vw, 72px); }
+.doc-head-in > * { animation: rise 800ms var(--ease-out) 100ms backwards; }
+.doc-head-in > :nth-child(2) { animation-delay: 160ms; }
+.doc-head-in > :nth-child(3) { animation-delay: 220ms; }
+.doc-updated { margin-top: 16px; font-size: 15px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.doc-updated time { color: var(--heading); }
+.doc-head .sub { max-width: 52ch; }
+
+/* Body */
+.doc-body { display: grid; gap: 40px; padding-block: clamp(48px, 7vw, 96px) clamp(72px, 10vw, 128px); }
+
+.doc-toc { border: 1px solid var(--border); border-radius: var(--radius-panel); background: var(--surface); padding: 18px 20px; }
+.doc-toc-title { font-size: 13px; font-weight: 600; letter-spacing: .02em; color: var(--text-secondary); }
+.doc-toc ol { margin-top: 8px; display: grid; gap: 2px; }
+.doc-toc a { display: block; padding: 6px 0; font-size: 15px; font-weight: 500; line-height: 1.35; color: var(--heading); text-decoration: none; transition: color .15s ease; }
+.doc-toc a:hover { color: var(--link); }
+
+.doc-prose { max-width: 68ch; min-width: 0; }
+.doc-prose section { padding-block: 32px; border-top: 1px solid var(--border); scroll-margin-top: calc(var(--nav-h) + 16px); }
+.doc-prose section:first-child { padding-top: 0; border-top: 0; }
+.doc-prose h2 { font-size: clamp(1.375rem, 1.15rem + .8vw, 1.75rem); font-weight: 600; line-height: 1.25; letter-spacing: -.01em; text-wrap: balance; }
+.doc-prose p { margin-top: 14px; text-wrap: pretty; }
+.doc-prose h2 + p { margin-top: 12px; }
+.doc-prose a { color: var(--link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; overflow-wrap: anywhere; transition: color .15s ease; }
+.doc-prose a:hover { color: var(--link-hover); }
+
+/* Bullets are small Ion Blue nodes; the cyan node stays the homepage's single accent */
+.doc-list { margin-top: 10px; display: grid; gap: 8px; }
+.doc-list li { position: relative; padding-left: 22px; }
+.doc-list li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--action); }
+
+/* Termed lists (rights, providers, retention) take the ledger's rhythm */
+.doc-terms { margin-top: 16px; }
+.doc-terms > div { display: grid; gap: 4px; padding-block: 14px; border-top: 1px solid var(--border); }
+.doc-terms > div:last-child { border-bottom: 1px solid var(--border); }
+.doc-terms:last-child > div:last-child { border-bottom: 0; } /* the next section's rule closes it */
+.doc-terms dt { font-weight: 600; color: var(--heading); }
+.doc-terms dd { margin: 0; color: var(--text); text-wrap: pretty; }
+
+.doc-contact { margin-top: 16px; padding: 28px 24px; border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--shadow); }
+.doc-contact h2 { font-size: clamp(1.25rem, 1.1rem + .6vw, 1.5rem); }
+.doc-contact p { margin-top: 8px; color: var(--text-secondary); }
+.doc-contact .pill-link { margin-top: 18px; text-decoration: none; color: var(--heading); }
+.doc-contact .pill-link:hover { border-color: var(--border-strong); }
+
+@media (min-width: 720px) {
+  .doc-terms > div { grid-template-columns: 13em 1fr; gap: 24px; }
+  .doc-contact { padding: 32px 30px; }
+}
+@media (min-width: 1000px) {
+  .doc-body { grid-template-columns: 15rem minmax(0, 1fr); gap: 72px; align-items: start; }
+  .doc-toc { position: sticky; top: calc(var(--nav-h) + 24px); border: 0; background: none; padding: 0; }
+  .doc-toc ol { border-left: 1px solid var(--border); }
+  .doc-toc a { padding: 6px 0 6px 16px; margin-left: -1px; border-left: 1px solid transparent; color: var(--text-secondary); }
+  .doc-toc a:hover { color: var(--heading); border-left-color: var(--action); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .doc-head-in > * { animation: none; }
+}
+
+@media print {
+  .nav, .menu, .footer, .skip, .doc-toc { display: none !important; }
+  .doc-head, .doc-head-in { padding: 0; }
+  .doc-head-card { background: none; }
+  .doc-head [data-theme], .doc-head, .doc-head * { color: #000 !important; }
+  .doc-body { display: block; padding-top: 24px; }
+  .doc-prose { max-width: none; }
+  .doc-contact { box-shadow: none; padding: 0; }
+}
