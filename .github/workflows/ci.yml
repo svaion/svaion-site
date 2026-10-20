@@ -36,7 +36,7 @@ jobs:
           CHROME_ARGS: --no-sandbox
         run: |
           npm run preview > preview.log 2>&1 &
-          curl --retry 20 --retry-connrefused --retry-delay 1 -fsS -o /dev/null http://127.0.0.1:4173/
+          curl --retry 30 --retry-all-errors --retry-delay 1 -fsS -o /dev/null http://127.0.0.1:4173/
           npm run check:csp
 
   docker:
@@ -51,7 +51,8 @@ jobs:
       - name: Serve pages, redirects, and 404s with security headers
         run: |
           docker run -d --name site --read-only --tmpfs /tmp --cap-drop ALL -p 8080:8080 svaion-site
-          curl --retry 20 --retry-connrefused --retry-delay 1 -fsS -o /dev/null http://127.0.0.1:8080/
+          # Docker accepts connections before nginx inside is listening, so retry resets too, not only refusals.
+          curl --retry 30 --retry-all-errors --retry-delay 1 -fsS -o /dev/null http://127.0.0.1:8080/
           curl -fsS -o /dev/null http://127.0.0.1:8080/privacy/
           test "$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' http://127.0.0.1:8080/privacy)" = "301 http://127.0.0.1:8080/privacy/"
           test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/no-such-page)" = 404
