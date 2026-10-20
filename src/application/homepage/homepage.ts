@@ -55,7 +55,6 @@ export function getHomepage(year = new Date().getFullYear()): HomepageView {
       email: emailLink(channels.general),
       heading: copy.contact.heading,
       primaryCta: { label: copy.contact.emailCta, href: mailto(channels.general, copy.contact.emailSubject) },
-      secondaryCta: copy.seeHowWeWork,
     },
     audience: {
       heading: copy.audience.heading,
@@ -106,7 +105,6 @@ export function getHomepage(year = new Date().getFullYear()): HomepageView {
     },
     closing: {
       heading: `Start with ${svaion.shortName}.`,
-      cta: siteCopy.startProject,
     },
   };
 }

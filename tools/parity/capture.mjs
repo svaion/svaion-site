@@ -5,7 +5,8 @@
 //   scroll: selector scrolled to block:center (instant) or null
 //   before: JS (may await) run after the scroll, e.g. "document.querySelector('#tab-docs').click()"
 //   settle: ms to wait (real time) after scroll/before, so observers fire and CSS animations start
-//   times:  ms; every animation from document.getAnimations() is paused at currentTime = t
+//   times:  ms; every time-based animation from document.getAnimations() is paused at currentTime = t
+//           (scroll-driven ones follow the scroll position instead)
 //   clip:   selector whose bounding box (+pad CSS px) is captured, or null for the viewport
 import { spawn, execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -132,7 +133,7 @@ for (const shot of spec) {
 
     const files = [];
     for (const t of times) {
-      await evaluate(sessionId, `(() => { document.getAnimations().forEach(a => { a.pause(); a.currentTime = ${Number(t)}; }); return ${RAF2}; })()`);
+      await evaluate(sessionId, `(() => { document.getAnimations().filter(a => a.timeline instanceof DocumentTimeline).forEach(a => { a.pause(); a.currentTime = ${Number(t)}; }); return ${RAF2}; })()`);
       const params = { format: 'png' };
       if (clip) {
         const box = await evaluate(sessionId, `(() => {

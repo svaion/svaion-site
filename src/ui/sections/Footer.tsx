@@ -3,7 +3,7 @@ import { FooterMark } from "./FooterMark";
 
 export function Footer({ view }: { view: FooterView }) {
   return (
-    <footer className="footer" data-theme="dark">
+    <footer className="footer" data-theme="dark" data-nav-dark>
       <div className="wrap footer-grid">
         <div className="footer-col">
           <strong>{view.name}</strong>

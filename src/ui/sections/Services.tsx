@@ -1,12 +1,5 @@
-import type { HomepageView, ServiceLineId } from "@/application/homepage/view";
-
-/** The sprite symbol drawn for each service line. */
-const ICONS: Readonly<Record<ServiceLineId, string>> = {
-  "web-applications": "#i-web",
-  "mobile-ready-platforms": "#i-mobile",
-  "business-systems": "#i-systems",
-  "ai-enabled-solutions": "#i-ai",
-};
+import type { HomepageView } from "@/application/homepage/view";
+import { ServicePreview } from "@/ui/brand/ServicePreview";
 
 export function Services({ view }: { view: HomepageView["services"] }) {
   return (
@@ -16,8 +9,8 @@ export function Services({ view }: { view: HomepageView["services"] }) {
         <p className="sub" data-reveal style={{ "--d": 80 }}>{view.intro}</p>
         <div className="services-grid" data-stagger>
           {view.lines.map((line) => (
-            <article className="card" key={line.id}>
-              <svg className="icon" aria-hidden="true"><use href={ICONS[line.id]} /></svg>
+            <article className={`card service service-${line.id}`} key={line.id}>
+              <ServicePreview id={line.id} />
               <h3>{line.name}</h3>
               <p>{line.summary}</p>
             </article>
