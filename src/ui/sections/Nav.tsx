@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import type { HomepageView } from "@/application/homepage/view";
+import type { NavView } from "@/application/site/view";
 import { Wordmark } from "@/ui/brand/Wordmark";
 
 function subscribeToScroll(onChange: () => void) {
@@ -12,7 +12,7 @@ function subscribeToScroll(onChange: () => void) {
 const isScrolled = () => window.scrollY > 24;
 const notScrolled = () => false;
 
-export function Nav({ view }: { view: HomepageView["nav"] }) {
+export function Nav({ view }: { view: NavView }) {
   const nav = useRef<HTMLElement>(null);
   const scrolled = useSyncExternalStore(subscribeToScroll, isScrolled, notScrolled);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -52,7 +52,7 @@ export function Nav({ view }: { view: HomepageView["nav"] }) {
     <>
       <header ref={nav} className={navClass} id="nav" data-theme="dark">
         <div className="nav-in">
-          <a className="brand" href="#top" aria-label={view.homeLabel}>
+          <a className="brand" href={view.homeHref} aria-label={view.homeLabel}>
             <Wordmark className="wordmark sv-reveal sv-run" aria-hidden="true" focusable="false" />
           </a>
           <nav aria-label={view.navLabel}>

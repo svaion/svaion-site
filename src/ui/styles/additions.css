@@ -1,0 +1,4 @@
+/* Styles for pages the approved homepage reference doesn't cover. globals.css stays a verbatim port of it (docs/adr/0003). */
+
+/* 404: the homepage hero card, one column, centered above the wave. */
+.hero-in.solo { grid-template-columns: 1fr; align-content: center; }
