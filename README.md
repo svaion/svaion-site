@@ -85,7 +85,29 @@ Dependencies point one way: `app → ui → application → contexts`. ESLint re
   - the privacy notice lists every right under the Act and declares anything the website collects.
 - The copy-parity test checks that every string on the homepage appears in `reference/homepage-v10.html`. When the approved design changes, update the reference first (docs/adr/0003).
 
-## Deploying
+## AWS Lightsail
+
+svaiontech.com runs on a Lightsail container service, `svaion-site`, in Singapore (ap-southeast-1). It runs the Docker image that CI publishes to `ghcr.io/svaion/svaion-site` after every merge to `main` that passes its checks. Each image is tagged `latest` and `sha-<commit>`.
+
+The deployment settings, in the Lightsail console under **svaion-site → Deployments**:
+- **Container name:** `site`
+- **Image:** `ghcr.io/svaion/svaion-site:latest`, or a `sha-…` tag to pin one release
+- **Open ports:** `8080`, HTTP
+- **Public endpoint:** `site`, port `8080`, health check path `/`
+
+To release, merge to `main` and wait for the **Publish image** job. Then choose **Modify your deployment → Save and deploy**, and Lightsail pulls the image again. To roll back, deploy an earlier `sha-…` tag.
+
+The GitHub package must be public so Lightsail can pull it without a login. That's a one-time setting: package settings → **Change visibility → Public**.
+
+To serve the custom domain:
+1. In **Custom domains**, create a certificate for `svaiontech.com` and `www.svaiontech.com`.
+2. Add the validation CNAME records it lists in Cloudflare DNS.
+3. Once the certificate is valid, attach both domains to the service.
+4. Point `svaiontech.com` and `www` at the service's default domain with CNAME records. Cloudflare flattens the one at the root.
+
+With the records set to **DNS only**, the Cloudflare settings below don't apply. If they are proxied, set SSL to **Full (strict)**.
+
+## Deploying elsewhere
 
 `npm run build` writes plain HTML, CSS, and JavaScript to `out/`. There is no server and no database (docs/adr/0002).
 
