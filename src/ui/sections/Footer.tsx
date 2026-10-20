@@ -1,7 +1,7 @@
-import type { HomepageView } from "@/application/homepage/view";
+import type { FooterView } from "@/application/site/view";
 import { FooterMark } from "./FooterMark";
 
-export function Footer({ view }: { view: HomepageView["footer"] }) {
+export function Footer({ view }: { view: FooterView }) {
   return (
     <footer className="footer" data-theme="dark">
       <div className="wrap footer-grid">
@@ -30,7 +30,10 @@ export function Footer({ view }: { view: HomepageView["footer"] }) {
       <div className="wrap">
         <div className="footer-legal">
           {view.legalNotice && <span>{view.legalNotice}</span>}
-          <span>{view.copyright}</span>
+          <span className="footer-legal-end">
+            <a href={view.privacy.href}>{view.privacy.label}</a>
+            <span>{view.copyright}</span>
+          </span>
         </div>
       </div>
     </footer>

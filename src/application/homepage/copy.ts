@@ -1,23 +1,10 @@
 /**
  * Homepage wording that is not a domain fact: section headings, calls to action, and labels.
+ * Wording every page shares (nav, footer, "Start a project") is in ../site/copy.ts.
  * Headings beyond the approved messages were signed off by the CEO and COO on 19 October 2026;
  * changes here need the same sign-off.
  */
 export const copy = {
-  skipLink: "Skip to content",
-  nav: {
-    homeLabel: "Svaion home",
-    navLabel: "Main",
-    menuOpenLabel: "Open menu",
-    menuCloseLabel: "Close menu",
-    links: [
-      { label: "Services", href: "#services" },
-      { label: "How we work", href: "#how" },
-      { label: "Who it's for", href: "#for" },
-      { label: "FAQs", href: "#faq" },
-    ],
-  },
-  startProject: { label: "Start a project", href: "#contact" },
   seeHowWeWork: { label: "See how we work", href: "#how" },
   hero: {
     reviewPromise: "Engineers review architecture, security, and code quality on every release.",
@@ -91,9 +78,4 @@ export const copy = {
     startQuestion: "How do we start?",
     startAfterEmail: "with the problem or the product idea. An engineer reads it and replies with questions, then we agree a scope for the discovery phase.",
   },
-  footer: {
-    emailHeading: "Email",
-  },
-  /** Midnight, the brand ground; colors the browser chrome on mobile. */
-  themeColor: "#0B1020",
 } as const;

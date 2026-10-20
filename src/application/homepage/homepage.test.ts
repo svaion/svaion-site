@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { getHomepage } from "./homepage";
 
 const view = getHomepage(2026);
-const reference = readFileSync(new URL("../../../reference/homepage-v9.html", import.meta.url), "utf8");
+const reference = readFileSync(new URL("../../../reference/homepage-v10.html", import.meta.url), "utf8");
 
 /** Every worded string in the view; ids are keys, not words. */
 function strings(value: unknown): string[] {

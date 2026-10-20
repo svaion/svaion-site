@@ -1,50 +1,36 @@
-import { mailto, registrationNotice, siteUrl, type ContactChannel } from "@/contexts/company/model";
+import { mailto } from "@/contexts/company/model";
 import { svaion } from "@/contexts/company/svaion";
 import { accountability, deliveryPath } from "@/contexts/delivery/practice";
 import { audienceSeries, formatWeeks, serviceLineSeries, timingMessage } from "@/contexts/offering/model";
 import { offering } from "@/contexts/offering/catalog";
 import { ILLUSTRATIVE_NOTICE } from "@/contexts/showcase/model";
 import { scenarios } from "@/contexts/showcase/scenarios";
+import { siteCopy } from "../site/copy";
+import { emailLink, getSiteChrome, routes } from "../site/site";
 import { copy } from "./copy";
-import type { EmailLink, HomepageView } from "./view";
+import type { HomepageView } from "./view";
 
-function emailLink(channel: ContactChannel): EmailLink {
-  return { address: channel.address, href: mailto(channel) };
-}
-
-/** Composes the four contexts into the homepage, the site's single read model. */
+/** Composes the four contexts into the homepage's read model. */
 export function getHomepage(year = new Date().getFullYear()): HomepageView {
   const { channels } = svaion;
   const services = serviceLineSeries(offering);
   const audience = audienceSeries(offering);
   const timing = timingMessage(offering.mvpWindow);
-  const title = `${svaion.presentationName} — ${svaion.headline}`;
 
   return {
-    skipLink: copy.skipLink,
+    ...getSiteChrome("homepage", year),
     meta: {
-      title,
+      title: `${svaion.presentationName} — ${svaion.headline}`,
       description: `${svaion.positioning} ${svaion.headline}`,
-      canonicalUrl: `${siteUrl(svaion)}/`,
-      siteName: svaion.presentationName,
+      path: routes.home,
       shareDescription: svaion.subheadline,
-      themeColor: copy.themeColor,
-    },
-    nav: {
-      homeLabel: copy.nav.homeLabel,
-      navLabel: copy.nav.navLabel,
-      menuOpenLabel: copy.nav.menuOpenLabel,
-      menuCloseLabel: copy.nav.menuCloseLabel,
-      links: copy.nav.links,
-      cta: copy.startProject,
-      email: emailLink(channels.general),
     },
     hero: {
       kicker: offering.serviceLines.map((line) => line.name),
       kickerSentence: `${services}.`,
       headline: svaion.headline,
       subheadline: svaion.subheadline,
-      primaryCta: copy.startProject,
+      primaryCta: siteCopy.startProject,
       secondaryCta: copy.seeHowWeWork,
       note: `${timing} ${copy.hero.reviewPromise}`,
       drawingTitle: copy.hero.drawingTitle,
@@ -84,7 +70,7 @@ export function getHomepage(year = new Date().getFullYear()): HomepageView {
       planWindow: `${formatWeeks(offering.mvpWindow.weeks)}.`,
       planNote: copy.engagement.planNote,
       commitments: offering.commitments,
-      cta: copy.startProject,
+      cta: siteCopy.startProject,
     },
     process: {
       heading: copy.process.heading,
@@ -120,19 +106,7 @@ export function getHomepage(year = new Date().getFullYear()): HomepageView {
     },
     closing: {
       heading: `Start with ${svaion.shortName}.`,
-      cta: copy.startProject,
-    },
-    footer: {
-      name: svaion.presentationName,
-      descriptor: svaion.descriptor,
-      site: { label: svaion.domain, href: siteUrl(svaion) },
-      emailHeading: copy.footer.emailHeading,
-      emails: [channels.general, channels.sales, channels.support, channels.privacy].map(emailLink),
-      linksHeading: svaion.shortName,
-      links: copy.nav.links,
-      social: `Social: ${svaion.socialHandle}`,
-      legalNotice: registrationNotice(svaion),
-      copyright: `© ${year} ${svaion.shortName} · ${svaion.domain}`,
+      cta: siteCopy.startProject,
     },
   };
 }

@@ -1,27 +1,11 @@
 import type { ServiceLineId } from "@/contexts/offering/model";
+import type { EmailLink, Link, PageMeta, SiteChromeView } from "../site/view";
 
-export type { ServiceLineId };
+export type { EmailLink, Link, ServiceLineId };
 
 /** Everything the homepage renders, already worded. The UI adds markup and motion, never words. */
-export interface HomepageView {
-  readonly skipLink: string;
-  readonly meta: {
-    readonly title: string;
-    readonly description: string;
-    readonly canonicalUrl: string;
-    readonly siteName: string;
-    readonly shareDescription: string;
-    readonly themeColor: string;
-  };
-  readonly nav: {
-    readonly homeLabel: string;
-    readonly navLabel: string;
-    readonly menuOpenLabel: string;
-    readonly menuCloseLabel: string;
-    readonly links: readonly Link[];
-    readonly cta: Link;
-    readonly email: EmailLink;
-  };
+export interface HomepageView extends SiteChromeView {
+  readonly meta: PageMeta;
   readonly hero: {
     readonly kicker: readonly string[];
     readonly kickerSentence: string;
@@ -89,28 +73,6 @@ export interface HomepageView {
     readonly heading: string;
     readonly cta: Link;
   };
-  readonly footer: {
-    readonly name: string;
-    readonly descriptor: string;
-    readonly site: Link;
-    readonly emailHeading: string;
-    readonly emails: readonly EmailLink[];
-    readonly linksHeading: string;
-    readonly links: readonly Link[];
-    readonly social: string;
-    readonly legalNotice: string | null;
-    readonly copyright: string;
-  };
-}
-
-export interface Link {
-  readonly label: string;
-  readonly href: string;
-}
-
-export interface EmailLink {
-  readonly address: string;
-  readonly href: string;
 }
 
 export interface ScenarioView {
