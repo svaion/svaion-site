@@ -1,0 +1,60 @@
+# Every pull request and every push to main: the checks a change must pass before it can merge.
+# The job names are the required status checks on main; rename them there too.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  site:
+    name: Test, lint, and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - name: Check every page's Content-Security-Policy in Chrome
+        env:
+          CHROME: /usr/bin/google-chrome
+          CHROME_ARGS: --no-sandbox
+        run: |
+          npm run preview > preview.log 2>&1 &
+          curl --retry 20 --retry-connrefused --retry-delay 1 -fsS -o /dev/null http://127.0.0.1:4173/
+          npm run check:csp
+
+  docker:
+    name: Docker image
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - name: Dockerfile uses the Node.js version in .node-version
+        run: grep -q "^FROM node:$(cat .node-version)-alpine " Dockerfile || { echo "::error file=Dockerfile::Node.js differs from .node-version ($(cat .node-version))"; exit 1; }
+      - run: docker build --target serve -t svaion-site .
+      - name: Serve pages, redirects, and 404s with security headers
+        run: |
+          docker run -d --name site --read-only --tmpfs /tmp --cap-drop ALL -p 8080:8080 svaion-site
+          curl --retry 20 --retry-connrefused --retry-delay 1 -fsS -o /dev/null http://127.0.0.1:8080/
+          curl -fsS -o /dev/null http://127.0.0.1:8080/privacy/
+          test "$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' http://127.0.0.1:8080/privacy)" = "301 http://127.0.0.1:8080/privacy/"
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/no-such-page)" = 404
+          curl -fsSI http://127.0.0.1:8080/ | grep -qi '^content-security-policy:'
+      - if: failure()
+        run: docker logs site

@@ -14,6 +14,14 @@ npm run parity     # with preview running: diff the homepage against reference/ 
 npm run check:csp  # with preview running: load every page in Chromium; fails on a CSP violation or broken behaviour
 ```
 
+## Checks on GitHub
+
+Every pull request runs `.github/workflows/ci.yml`. Its two jobs must pass before anything merges into `main`:
+- **Test, lint, and build** runs the type check, lint, tests, and build, then loads every page in Chrome with the security headers on.
+- **Docker image** builds the container and checks its pages, redirects, 404s, and headers.
+
+`main` only changes through pull requests. Node.js is pinned in `.node-version`, which CI and Cloudflare Pages read; the Dockerfile must match it.
+
 ## Docker
 
 The same site in a container, with nothing to install but Docker:
