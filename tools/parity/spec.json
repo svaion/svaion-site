@@ -1,0 +1,18 @@
+[
+ {"name":"hero-d","width":1440,"height":900,"scroll":null,"settle":100,"times":[0,700,2000],"clip":null},
+ {"name":"hero-m","width":390,"height":844,"scroll":null,"settle":100,"times":[2000],"clip":null},
+ {"name":"menu-m","width":390,"height":844,"scroll":null,"before":"document.querySelector('.menu-btn').click()","settle":400,"times":[600],"clip":null},
+ {"name":"demo-d","width":1440,"height":900,"scroll":".phone","settle":400,"times":[1000,3200],"clip":".phone-wrap"},
+ {"name":"demo-tab-m","width":390,"height":844,"scroll":".phone","before":"document.getElementById('tab-docs').click()","settle":400,"times":[3200],"clip":".phone-wrap"},
+ {"name":"contact-d","width":1440,"height":900,"scroll":".giant-email","settle":400,"times":[2000],"clip":null},
+ {"name":"audience-d","width":1440,"height":900,"scroll":".loop","settle":400,"times":[2000],"clip":null},
+ {"name":"engagement-d","width":1440,"height":900,"scroll":".combo-grid","settle":400,"times":[600,2000],"clip":".combo-grid","pad":40},
+ {"name":"process-d","width":1440,"height":900,"scroll":".steps","settle":400,"times":[500,2000],"clip":".steps","pad":24},
+ {"name":"process-m","width":390,"height":844,"scroll":".steps","settle":400,"times":[2000],"clip":".steps","pad":16},
+ {"name":"services-d","width":1440,"height":900,"scroll":".services-grid","settle":400,"times":[2000],"clip":null},
+ {"name":"ledger-d","width":1440,"height":900,"scroll":".ledger","settle":400,"times":[2000],"clip":".ledger-card","pad":16},
+ {"name":"faq-d","width":1440,"height":900,"scroll":".faq-list","settle":400,"times":[2000],"clip":".faq-grid","pad":16},
+ {"name":"closing-d","width":1440,"height":900,"scroll":"#closing-title","settle":400,"times":[2000],"clip":null},
+ {"name":"footer-d","width":1440,"height":900,"scroll":".footer-legal","settle":500,"times":[2000],"clip":".footer"},
+ {"name":"footer-m","width":390,"height":844,"scroll":".footer-legal","settle":500,"times":[2000],"clip":".footer"}
+]
