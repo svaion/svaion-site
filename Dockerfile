@@ -3,6 +3,7 @@
 #   docker compose up --build                                   # serve on http://localhost:8080
 #   docker build --target export --output type=local,dest=out . # just the files, for Cloudflare Pages
 
+# Same Node.js as .node-version (CI fails if they differ).
 FROM node:26.8.1-alpine AS build
 WORKDIR /site
 ENV NEXT_TELEMETRY_DISABLED=1

@@ -16,7 +16,10 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const chrome = spawn(CHROME, [
   '--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--mute-audio',
-  '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank',
+  '--remote-debugging-port=0', `--user-data-dir=${profile}`,
+  // Extra flags from the environment, e.g. CHROME_ARGS=--no-sandbox on CI runners.
+  ...(process.env.CHROME_ARGS || '').split(' ').filter(Boolean),
+  'about:blank',
 ], { stdio: ['ignore', 'ignore', 'pipe'] });
 process.on('exit', () => {
   try { chrome.kill('SIGKILL'); } catch {}
